@@ -1,0 +1,102 @@
+# 📋 INSTRUCCIONES PARA SUBIR TU APP DE RECLAMOS
+
+## ¿Qué vas a necesitar?
+- Tu cuenta de Gmail
+- 15 minutos de tu tiempo
+- Esta carpeta descomprimida en tu computadora
+
+---
+
+## PASO 1 — Crear cuenta en GitHub
+GitHub es donde vas a guardar el código (es gratis)
+
+1. Entrá a: https://github.com
+2. Hacé clic en "Sign up"
+3. Ingresá tu email de Gmail, una contraseña, y un nombre de usuario
+4. Verificá tu email cuando te llegue el correo
+5. Completá el registro (podés saltar los pasos opcionales)
+
+---
+
+## PASO 2 — Crear un repositorio (carpeta en la nube)
+
+1. Una vez dentro de GitHub, hacé clic en el botón verde "New" (arriba a la izquierda)
+2. En "Repository name" escribí: reclamos-app
+3. Dejá todo lo demás como está
+4. Hacé clic en "Create repository" (botón verde abajo)
+
+---
+
+## PASO 3 — Subir los archivos
+
+1. En la pantalla que aparece, buscá el link que dice "uploading an existing file"
+2. Hacé clic ahí
+3. Arrastrá TODOS los archivos de esta carpeta a esa pantalla
+   (Importante: subí los archivos de adentro de la carpeta, no la carpeta en sí)
+4. Abajo escribí un mensaje como "primera versión"
+5. Hacé clic en "Commit changes" (botón verde)
+
+---
+
+## PASO 4 — Crear cuenta en Vercel y conectar
+
+1. Entrá a: https://vercel.com
+2. Hacé clic en "Sign Up"
+3. Elegí "Continue with GitHub"
+4. Autorizá la conexión
+5. Te va a aparecer tu repositorio "reclamos-app" — hacé clic en "Import"
+6. Dejá todo como está y hacé clic en "Deploy"
+7. ¡Esperá 2 minutos y listo!
+
+---
+
+## PASO 5 — Configurar la base de datos (Firebase)
+
+Para que los datos se guarden en la nube y ambas personas los vean,
+necesitás crear una base de datos gratuita en Firebase:
+
+1. Entrá a: https://console.firebase.google.com
+2. Hacé clic en "Agregar proyecto"
+3. Nombre del proyecto: reclamos-app → Continuar
+4. Desactivá Google Analytics → Crear proyecto
+5. Cuando cargue, en el menú de la izquierda buscá "Realtime Database"
+6. Hacé clic en "Crear base de datos"
+7. Elegí cualquier ubicación → Siguiente
+8. Elegí "Empezar en modo de prueba" → Habilitar
+9. Copiá la URL que aparece (algo como: https://reclamos-app-XXXX.firebaseio.com)
+
+Ahora abrí el archivo pages/reclamos.js con el Bloc de notas y reemplazá esta línea:
+  const DB_URL = "https://reclamos-db-default-rtdb.firebaseio.com/reclamos";
+por tu URL real + /reclamos al final.
+
+Luego volvé a subir el archivo a GitHub y Vercel lo actualiza solo.
+
+---
+
+## RESULTADO FINAL
+
+Vas a tener una dirección web tipo:
+  https://reclamos-app.vercel.app
+
+Compartila con la otra persona y ya pueden usarla las dos desde cualquier lugar.
+
+Usuario: agustin
+Contraseña: Nadargentina
+
+---
+
+## ¿Necesitás agregar otro usuario?
+
+Abrí el archivo pages/index.js con el Bloc de notas, buscá esta parte:
+
+  const USERS = [
+    { user: "agustin", pass: "Nadargentina" },
+  ];
+
+Y agregá una línea más:
+  const USERS = [
+    { user: "agustin", pass: "Nadargentina" },
+    { user: "maria", pass: "sucontraseña" },
+  ];
+
+Guardá el archivo y subilo de nuevo a GitHub.
