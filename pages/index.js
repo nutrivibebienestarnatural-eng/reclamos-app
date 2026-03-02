@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 const USERS = [
-  { user: "agustin", pass: "Nadargentina" },
+   { user: "agustin", pass: "Nadargentina" },
+  { user: "nacho", pass: "NadNacho" },
 ];
 
 export default function Login() {
