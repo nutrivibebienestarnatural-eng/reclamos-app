@@ -15,6 +15,51 @@ function formatDate(iso) {
   return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
+// ─── FUNCIÓN DE EXPORTAR A EXCEL ───────────────────────────────────────────
+function exportarExcel(reclamos, filtroActivo) {
+  // Carga SheetJS dinámicamente si todavía no está
+  const cargarYExportar = () => {
+    const filas = reclamos.map(r => ({
+      "Orden": r.orden || "",
+      "Cliente": r.cliente || "",
+      "Estado": r.estado || "",
+      "Etiqueta": r.etiqueta ? "Generada" : "No generada",
+      "Productos": r.productos || "",
+      "Productos Faltantes": r.productosFaltantes || "",
+      "Notas": r.notas || "",
+      "Responsable": r.responsable || "",
+      "Fecha Creación": formatDate(r.fechaCreacion),
+      "Última Actualización": formatDate(r.fechaActualizacion),
+    }));
+
+    const XLSX = window.XLSX;
+    const hoja = XLSX.utils.json_to_sheet(filas);
+
+    // Ancho de columnas
+    hoja["!cols"] = [
+      { wch: 12 }, { wch: 20 }, { wch: 14 }, { wch: 14 },
+      { wch: 35 }, { wch: 25 }, { wch: 30 }, { wch: 15 },
+      { wch: 20 }, { wch: 20 },
+    ];
+
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, "Reclamos");
+
+    const nombreArchivo = `reclamos_${filtroActivo}_${new Date().toISOString().slice(0,10)}.xlsx`;
+    XLSX.writeFile(libro, nombreArchivo);
+  };
+
+  if (window.XLSX) {
+    cargarYExportar();
+  } else {
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+    script.onload = cargarYExportar;
+    document.head.appendChild(script);
+  }
+}
+// ───────────────────────────────────────────────────────────────────────────
+
 export default function Reclamos() {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -150,6 +195,8 @@ export default function Reclamos() {
         .btn-ghost { background: transparent; color: #94a3b8; padding: 8px 16px; font-size: 13px; border: 1px solid #2d3748; }
         .btn-ghost:hover { border-color: #3b82f6; color: #3b82f6; }
         .btn-danger { background: #ef4444; color: white; padding: 8px 16px; font-size: 13px; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 600; }
+        .btn-excel { background: #166534; color: #bbf7d0; padding: 8px 16px; font-size: 13px; border: 1px solid #15803d; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 600; transition: all 0.18s; }
+        .btn-excel:hover { background: #15803d; color: white; }
         .field { margin-bottom: 18px; }
         .field label { display: block; font-size: 12px; font-weight: 600; color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px; }
         .field input, .field textarea, .field select { width: 100%; background: #13161f; border: 1.5px solid #2d3748; border-radius: 8px; padding: 10px 14px; color: #e2e8f0; font-size: 14px; outline: none; }
@@ -192,11 +239,20 @@ export default function Reclamos() {
                 </div>
               ))}
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
               <span style={{ color: "#64748b", fontSize: 13 }}>{filtered.length} reclamo{filtered.length !== 1 ? "s" : ""}{filter !== "todos" ? ` · ${filter}` : ""}</span>
-              <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {filter !== "todos" && <button className="btn btn-ghost" onClick={() => setFilter("todos")}>Ver todos</button>}
                 <button className="btn btn-ghost" onClick={fetchReclamos}>↻ Actualizar</button>
+                {/* ─── BOTÓN EXPORTAR EXCEL ─── */}
+                <button
+                  className="btn-excel"
+                  onClick={() => exportarExcel(filtered, filter)}
+                  disabled={filtered.length === 0}
+                  title={`Exportar ${filtered.length} reclamo(s) a Excel`}
+                >
+                  ⬇ Exportar Excel {filter !== "todos" ? `(${filter})` : ""}
+                </button>
               </div>
             </div>
             {loading ? (
